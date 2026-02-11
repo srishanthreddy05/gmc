@@ -1,8 +1,11 @@
 export interface Product {
   productId: string;
   name: string;
+  category: string;
+  mrp: number;
   price: number;
   stock: number;
+  tags: string[];
   description: string;
   displayImage: string;
   album?: string[];

@@ -12,10 +12,25 @@ interface StockFormProps {
   onSuccess: () => void;
 }
 
+const CATEGORY_OPTIONS = [
+  { label: 'Car Frames', value: 'car-frames' },
+  { label: 'Car Poster Frames', value: 'car-poster-frames' },
+  { label: 'Hotwheels', value: 'hotwheels' },
+  { label: 'Hotwheel Bouquets', value: 'hotwheel-bouquets' },
+  { label: 'Keychains', value: 'keychains' },
+  { label: 'Phone Cases', value: 'phone-cases' },
+  { label: 'Posters', value: 'posters' },
+  { label: 'T-Shirts', value: 't-shirts' },
+  { label: 'Valentine Gifts', value: 'valentine-gifts' },
+];
+
 const INITIAL_FORM_STATE = {
   name: '',
+  category: '',
+  mrp: '',
   price: '',
   stock: '',
+  tags: '',
   description: '',
   displayImage: '',
   album: '',
@@ -34,8 +49,11 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
     if (editingProduct) {
       setFormData({
         name: editingProduct.name,
+        category: editingProduct.category || '',
+        mrp: editingProduct.mrp?.toString() || '',
         price: editingProduct.price.toString(),
         stock: editingProduct.stock.toString(),
+        tags: editingProduct.tags?.join(', ') || '',
         description: editingProduct.description,
         displayImage: editingProduct.displayImage,
         album: editingProduct.album?.join('\n') || '',
@@ -67,17 +85,42 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
     }
   };
 
+  const parseTags = (tagsInput: string): string[] =>
+    tagsInput
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
   const validateForm = (): boolean => {
     if (!formData.name.trim()) {
       setError('Name is required');
       return false;
     }
-    if (!formData.price || isNaN(parseFloat(formData.price)) || parseFloat(formData.price) < 0) {
+    if (!formData.category) {
+      setError('Category is required');
+      return false;
+    }
+    const mrpValue = parseFloat(formData.mrp);
+    const priceValue = parseFloat(formData.price);
+    if (!formData.mrp || isNaN(mrpValue) || mrpValue <= 0) {
+      setError('MRP must be a valid positive number');
+      return false;
+    }
+    if (!formData.price || isNaN(priceValue) || priceValue <= 0) {
       setError('Price must be a valid positive number');
       return false;
     }
-    if (!formData.stock || isNaN(parseInt(formData.stock)) || parseInt(formData.stock) < 0) {
+    if (mrpValue < priceValue) {
+      setError('MRP must be greater than or equal to price');
+      return false;
+    }
+    const stockValue = parseInt(formData.stock);
+    if (isNaN(stockValue) || stockValue < 0) {
       setError('Stock must be a valid non-negative number');
+      return false;
+    }
+    if (parseTags(formData.tags).length === 0) {
+      setError('Tags must contain at least one value');
       return false;
     }
     if (!formData.description.trim()) {
@@ -129,13 +172,18 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
       
       // Combine uploaded images with URL entries
       const album = [...albumUrls, ...urlAlbum];
+
+      const tags = parseTags(formData.tags);
       
       setUploadProgress('Saving product...');
 
       const productData = {
         name: formData.name,
+        category: formData.category,
+        mrp: parseFloat(formData.mrp),
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        tags,
         description: formData.description,
         displayImage: displayImageUrl,
         ...(album.length > 0 && { album }),
@@ -174,6 +222,18 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
     }
   };
 
+  const mrpValue = parseFloat(formData.mrp);
+  const priceValue = parseFloat(formData.price);
+  const showDiscountPreview =
+    Number.isFinite(mrpValue) &&
+    Number.isFinite(priceValue) &&
+    mrpValue > 0 &&
+    priceValue >= 0 &&
+    mrpValue >= priceValue;
+  const discountPercent = showDiscountPreview
+    ? Math.max(0, ((mrpValue - priceValue) / mrpValue) * 100)
+    : 0;
+
   return (
     <div className="bg-slate-700 border-2 border-blue-500 rounded-lg p-8 mb-6 shadow-xl">
       <h2 className="text-3xl font-bold mb-6 text-blue-300">
@@ -184,7 +244,7 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
       {uploadProgress && <div className="mb-4 p-3 bg-blue-500 border border-blue-600 text-white rounded-lg font-semibold">{uploadProgress}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label className="block font-semibold mb-2 text-slate-100">Product Name *</label>
             <input
@@ -199,6 +259,56 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
           </div>
 
           <div>
+            <label className="block font-semibold mb-2 text-slate-100">Category *</label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              className="w-full bg-slate-600 border-2 border-slate-500 text-white rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              disabled={loading}
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              {CATEGORY_OPTIONS.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-semibold mb-2 text-slate-100">Enabled</label>
+            <label className="flex items-center gap-3 bg-slate-600 border-2 border-slate-500 rounded px-4 py-2.5 text-slate-100">
+              <input
+                type="checkbox"
+                name="enabled"
+                checked={formData.enabled}
+                onChange={handleInputChange}
+                className="h-5 w-5 accent-blue-500"
+                disabled={loading}
+              />
+              <span className="font-semibold">{formData.enabled ? 'Enabled' : 'Disabled'}</span>
+            </label>
+          </div>
+
+          <div>
+            <label className="block font-semibold mb-2 text-slate-100">MRP (₹) *</label>
+            <input
+              type="number"
+              name="mrp"
+              value={formData.mrp}
+              onChange={handleInputChange}
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              disabled={loading}
+            />
+          </div>
+
+          <div>
             <label className="block font-semibold mb-2 text-slate-100">Price (₹) *</label>
             <input
               type="number"
@@ -207,7 +317,7 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
               onChange={handleInputChange}
               placeholder="0.00"
               step="0.01"
-              min="0" 
+              min="0"
               className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
               disabled={loading}
             />
@@ -226,23 +336,34 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
               disabled={loading}
             />
           </div>
-
-          <div>
-            <label className="block font-semibold mb-2 text-slate-100">Enabled</label>
-            <select
-              name="enabled"
-              value={formData.enabled.toString()}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, enabled: e.target.value === 'true' }))
-              }
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
-              disabled={loading}
-            >
-              <option value="true">Enabled</option>
-              <option value="false">Disabled</option>
-            </select>
-          </div>
         </div>
+
+        <div>
+          <label className="block font-semibold mb-2 text-slate-100">Tags (comma-separated) *</label>
+          <input
+            type="text"
+            name="tags"
+            value={formData.tags}
+            onChange={handleInputChange}
+            placeholder="gift, premium, limited"
+            className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+            disabled={loading}
+          />
+        </div>
+
+        {showDiscountPreview && (
+          <div className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-slate-100">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold">Discount Preview</span>
+              <span className="text-green-300 font-bold">
+                {discountPercent.toFixed(1)}%
+              </span>
+            </div>
+            <div className="text-sm text-slate-300">
+              You save ₹{Math.max(0, mrpValue - priceValue).toFixed(2)} off MRP.
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="block font-semibold mb-2 text-slate-100">Description *</label>

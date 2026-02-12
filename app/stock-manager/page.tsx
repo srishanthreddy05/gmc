@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useProducts } from '@/hooks/useProducts';
-import { StockList } from '@/components/StockList';
+import { CategoryWiseStockList } from '@/components/CategoryWiseStockList';
 import { StockForm } from '@/components/StockForm';
 import { Product } from '@/types';
 
@@ -32,8 +32,8 @@ export default function StockManager() {
 
   if (error) {
     return (
-      <div className="p-6">
-        <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
+      <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="bg-red-100 border border-red-400 text-red-800 p-4 rounded font-semibold">
           Error loading products: {error}
         </div>
       </div>
@@ -41,8 +41,8 @@ export default function StockManager() {
   }
 
   return (
-    <div className="p-8 min-h-screen">
-      <h1 className="text-5xl font-bold mb-8 text-blue-300">Stock Manager</h1>
+    <div className="p-8 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <h1 className="text-5xl font-bold mb-8 text-slate-800">Stock Manager</h1>
 
       {showForm && (
         <StockForm
@@ -61,13 +61,13 @@ export default function StockManager() {
         </button>
       )}
 
-      <div className="bg-slate-700 border-2 border-blue-500 rounded-lg p-6 shadow-xl">
+      <div className="bg-white border-2 border-blue-300 rounded-lg p-6 shadow-lg">
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-slate-300 text-lg">Loading products...</p>
+            <p className="text-slate-600 text-lg">Loading products...</p>
           </div>
         ) : (
-          <StockList products={products} onEdit={handleEdit} />
+          <CategoryWiseStockList products={products} onEdit={handleEdit} />
         )}
       </div>
     </div>

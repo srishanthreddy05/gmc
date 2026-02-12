@@ -12,7 +12,7 @@ export default function Orders() {
 
   const handleToggleStatus = async (
     orderId: string,
-    newStatus: 'delivered' | 'not-delivered'
+    newStatus: string
   ) => {
     setLoadingOrderIds((prev) => new Set(prev).add(orderId));
 
@@ -20,7 +20,7 @@ export default function Orders() {
       const database = getDatabase();
       const orderRef = ref(database, `orders/${orderId}`);
       await update(orderRef, {
-        deliveryStatus: newStatus,
+        status: newStatus,
       });
     } catch (err) {
       console.error('Failed to update order status:', err);
@@ -36,8 +36,8 @@ export default function Orders() {
 
   if (error) {
     return (
-      <div className="p-8 min-h-screen">
-        <div className="bg-red-900 border-2 border-red-600 text-red-200 p-6 rounded-lg font-semibold">
+      <div className="p-8 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="bg-red-100 border-2 border-red-400 text-red-800 p-6 rounded-lg font-semibold">
           Error loading orders: {error}
         </div>
       </div>
@@ -45,13 +45,13 @@ export default function Orders() {
   }
 
   return (
-    <div className="p-8 min-h-screen">
-      <h1 className="text-5xl font-bold mb-8 text-blue-300">Orders</h1>
+    <div className="p-8 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <h1 className="text-5xl font-bold mb-8 text-slate-800">Orders</h1>
 
-      <div className="bg-slate-700 border-2 border-blue-500 rounded-lg p-6 shadow-xl">
+      <div className="bg-white border-2 border-blue-300 rounded-lg p-6 shadow-lg">
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-slate-300 text-lg">Loading orders...</p>
+            <p className="text-slate-600 text-lg">Loading orders...</p>
           </div>
         ) : (
           <OrdersList orders={orders} onToggleStatus={handleToggleStatus} loadingOrderIds={loadingOrderIds} />

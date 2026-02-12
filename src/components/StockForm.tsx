@@ -235,36 +235,36 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
     : 0;
 
   return (
-    <div className="bg-slate-700 border-2 border-blue-500 rounded-lg p-8 mb-6 shadow-xl">
-      <h2 className="text-3xl font-bold mb-6 text-blue-300">
+    <div className="bg-white border-2 border-blue-300 rounded-lg p-8 mb-6 shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-slate-800">
         {editingProduct ? 'Edit Product' : 'Add New Product'}
       </h2>
 
-      {error && <div className="mb-4 p-3 bg-red-500 border border-red-600 text-white rounded-lg font-semibold">{error}</div>}
-      {uploadProgress && <div className="mb-4 p-3 bg-blue-500 border border-blue-600 text-white rounded-lg font-semibold">{uploadProgress}</div>}
+      {error && <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-800 rounded-lg font-semibold">{error}</div>}
+      {uploadProgress && <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-800 rounded-lg font-semibold">{uploadProgress}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="block font-semibold mb-2 text-slate-100">Product Name *</label>
+            <label className="block font-semibold mb-2 text-slate-800">Product Name *</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter product name"
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label className="block font-semibold mb-2 text-slate-100">Category *</label>
+            <label className="block font-semibold mb-2 text-slate-800">Category *</label>
             <select
               name="category"
               value={formData.category}
               onChange={handleInputChange}
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               disabled={loading}
             >
               <option value="" disabled>
@@ -279,14 +279,14 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
           </div>
 
           <div>
-            <label className="block font-semibold mb-2 text-slate-100">Enabled</label>
-            <label className="flex items-center gap-3 bg-slate-600 border-2 border-slate-500 rounded px-4 py-2.5 text-slate-100">
+            <label className="block font-semibold mb-2 text-slate-800">Enabled</label>
+            <label className="flex items-center gap-3 bg-slate-50 border-2 border-slate-300 rounded px-4 py-2.5 text-slate-900">
               <input
                 type="checkbox"
                 name="enabled"
                 checked={formData.enabled}
                 onChange={handleInputChange}
-                className="h-5 w-5 accent-blue-500"
+                className="h-5 w-5 accent-blue-600"
                 disabled={loading}
               />
               <span className="font-semibold">{formData.enabled ? 'Enabled' : 'Disabled'}</span>
@@ -294,7 +294,7 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
           </div>
 
           <div>
-            <label className="block font-semibold mb-2 text-slate-100">MRP (₹) *</label>
+            <label className="block font-semibold mb-2 text-slate-800">MRP (₹) *</label>
             <input
               type="number"
               name="mrp"
@@ -303,13 +303,13 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
               placeholder="0.00"
               step="0.01"
               min="0"
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label className="block font-semibold mb-2 text-slate-100">Price (₹) *</label>
+            <label className="block font-semibold mb-2 text-slate-800">Price (₹) *</label>
             <input
               type="number"
               name="price"
@@ -318,13 +318,13 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
               placeholder="0.00"
               step="0.01"
               min="0"
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label className="block font-semibold mb-2 text-slate-100">Stock Quantity *</label>
+            <label className="block font-semibold mb-2 text-slate-800">Stock Quantity *</label>
             <input
               type="number"
               name="stock"
@@ -332,54 +332,54 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
               onChange={handleInputChange}
               placeholder="0"
               min="0"
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               disabled={loading}
             />
           </div>
         </div>
 
         <div>
-          <label className="block font-semibold mb-2 text-slate-100">Tags (comma-separated) *</label>
+          <label className="block font-semibold mb-2 text-slate-800">Tags (comma-separated) *</label>
           <input
             type="text"
             name="tags"
             value={formData.tags}
             onChange={handleInputChange}
             placeholder="gift, premium, limited"
-            className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+            className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
             disabled={loading}
           />
         </div>
 
         {showDiscountPreview && (
-          <div className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-slate-100">
+          <div className="bg-green-50 border border-green-300 rounded-lg px-4 py-3 text-slate-900">
             <div className="flex items-center justify-between">
               <span className="font-semibold">Discount Preview</span>
-              <span className="text-green-300 font-bold">
+              <span className="text-green-700 font-bold">
                 {discountPercent.toFixed(1)}%
               </span>
             </div>
-            <div className="text-sm text-slate-300">
+            <div className="text-sm text-slate-700">
               You save ₹{Math.max(0, mrpValue - priceValue).toFixed(2)} off MRP.
             </div>
           </div>
         )}
 
         <div>
-          <label className="block font-semibold mb-2 text-slate-100">Description *</label>
+          <label className="block font-semibold mb-2 text-slate-800">Description *</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
             placeholder="Enter product description"
-            className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+            className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
             rows={3}
             disabled={loading}
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-2 text-slate-100">Display Image *</label>
+          <label className="block font-semibold mb-2 text-slate-800">Display Image *</label>
           <div className="space-y-3">
             <input
               type="file"
@@ -391,13 +391,13 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
                   setFormData((prev) => ({ ...prev, displayImage: '' }));
                 }
               }}
-              className="w-full bg-slate-600 border-2 border-slate-500 text-slate-100 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-1 file:rounded file:cursor-pointer"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-1 file:rounded file:cursor-pointer"
               disabled={loading}
             />
             {displayImageFile && (
-              <p className="text-sm text-green-300 font-semibold">✓ Selected: {displayImageFile.name}</p>
+              <p className="text-sm text-green-700 font-semibold">✓ Selected: {displayImageFile.name}</p>
             )}
-            <div className="text-sm text-slate-300">Or enter URL:</div>
+            <div className="text-sm text-slate-700">Or enter URL:</div>
             <input
               type="url"
               name="displayImage"
@@ -407,14 +407,14 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
                 setDisplayImageFile(null);
               }}
               placeholder="https://example.com/image.jpg"
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               disabled={loading}
             />
           </div>
         </div>
 
         <div>
-          <label className="block font-semibold mb-2 text-slate-100">Album Images</label>
+          <label className="block font-semibold mb-2 text-slate-800">Album Images</label>
           <div className="space-y-3">
             <input
               type="file"
@@ -424,19 +424,19 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
                 const files = Array.from(e.target.files || []);
                 setAlbumFiles(files);
               }}
-              className="w-full bg-slate-600 border-2 border-slate-500 text-slate-100 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-1 file:rounded file:cursor-pointer"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-1 file:rounded file:cursor-pointer"
               disabled={loading}
             />
             {albumFiles.length > 0 && (
-              <p className="text-sm text-green-300 font-semibold">✓ {albumFiles.length} file(s) selected</p>
+              <p className="text-sm text-green-700 font-semibold">✓ {albumFiles.length} file(s) selected</p>
             )}
-            <div className="text-sm text-slate-300">Or enter URLs (one per line):</div>
+            <div className="text-sm text-slate-700">Or enter URLs (one per line):</div>
             <textarea
               name="album"
               value={formData.album}
               onChange={handleInputChange}
               placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-              className="w-full bg-slate-600 border-2 border-slate-500 text-white placeholder-slate-400 rounded px-4 py-2.5 focus:border-blue-400 focus:outline-none transition"
+              className="w-full bg-slate-50 border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded px-4 py-2.5 focus:border-blue-500 focus:outline-none transition"
               rows={3}
               disabled={loading}
             />
@@ -456,7 +456,7 @@ export const StockForm = ({ editingProduct, onClose, onSuccess }: StockFormProps
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition disabled:opacity-50 shadow-lg"
+            className="flex-1 px-6 py-3 bg-slate-400 text-white font-bold rounded-lg hover:bg-slate-500 transition disabled:opacity-50 shadow-lg"
           >
             Cancel
           </button>

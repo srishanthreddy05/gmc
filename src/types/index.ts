@@ -16,11 +16,17 @@ export interface Product {
 
 export interface Order {
   orderId: string;
-  customerName: string;
+  name: string;
   email: string;
-  items: OrderItem[];
+  phone: string;
+  paymentMode: string;
+  status: string;
+  totalAmount: number;
+  cartValue: number;
+  itemNames?: string[];
+  items?: OrderItem[];
   createdAt: number;
-  deliveryStatus: 'delivered' | 'not-delivered';
+  deliveryStatus?: 'delivered' | 'not-delivered';
 }
 
 export interface OrderItem {

@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getDatabase as fbGetDatabase, Database } from 'firebase/database';
+import { getDatabase as fbGetDatabase, Database, ref, remove } from 'firebase/database';
 
 let database: Database | null = null;
 
@@ -27,4 +27,14 @@ export const getDatabase = () => {
     initializeFirebase();
   }
   return database!;
+};
+
+export const deleteProduct = async (productId: string) => {
+  try {
+    const database = getDatabase();
+    const productRef = ref(database, `stock/${productId}`);
+    await remove(productRef);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to delete product');
+  }
 };

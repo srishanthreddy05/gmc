@@ -3,10 +3,8 @@
 import { Product } from '@/types';
 import Image from 'next/image';
 
-interface CategoryWiseStockListProps {
+interface LowStockListProps {
   products: Product[];
-  onEdit: (product: Product) => void;
-  onDelete: (product: Product) => void;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -21,17 +19,22 @@ const CATEGORY_LABELS: Record<string, string> = {
   'valentine-gifts': 'Valentine Gifts',
 };
 
-export const CategoryWiseStockList = ({ products, onEdit, onDelete }: CategoryWiseStockListProps) => {
-  if (products.length === 0) {
+export const LowStockList = ({ products }: LowStockListProps) => {
+  // Filter products with stock less than or equal to 2
+  const lowStockProducts = products.filter((product) => product.stock <= 2);
+
+  if (lowStockProducts.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-600 text-lg">No products found</p>
+        <div className="text-6xl mb-4">✓</div>
+        <p className="text-slate-600 text-lg font-semibold">All products have sufficient stock!</p>
+        <p className="text-slate-500 text-sm mt-2">No products with stock less than or equal to 2 units</p>
       </div>
     );
   }
 
   // Group products by category
-  const groupedByCategory = products.reduce(
+  const groupedByCategory = lowStockProducts.reduce(
     (acc, product) => {
       const category = product.category;
       if (!acc[category]) {
@@ -52,10 +55,10 @@ export const CategoryWiseStockList = ({ products, onEdit, onDelete }: CategoryWi
         const categoryLabel = CATEGORY_LABELS[category] || category;
 
         return (
-          <div key={category} className="bg-white rounded-lg border-2 border-blue-300 overflow-hidden shadow-lg">
-            <div className="bg-gradient-to-r from-blue-200 to-blue-100 px-6 py-4 border-b-2 border-blue-300">
+          <div key={category} className="bg-white rounded-lg border-2 border-red-300 overflow-hidden shadow-lg">
+            <div className="bg-gradient-to-r from-red-200 to-red-100 px-6 py-4 border-b-2 border-red-300">
               <h2 className="text-2xl font-bold text-slate-800">{categoryLabel}</h2>
-              <p className="text-sm text-slate-600">{categoryProducts.length} product(s)</p>
+              <p className="text-sm text-slate-600">{categoryProducts.length} product(s) with low stock</p>
             </div>
 
             <div className="overflow-x-auto">
@@ -68,12 +71,11 @@ export const CategoryWiseStockList = ({ products, onEdit, onDelete }: CategoryWi
                     <th className="border border-slate-300 p-4 text-left text-slate-800 font-bold">MRP</th>
                     <th className="border border-slate-300 p-4 text-left text-slate-800 font-bold">Stock</th>
                     <th className="border border-slate-300 p-4 text-left text-slate-800 font-bold">Status</th>
-                    <th className="border border-slate-300 p-4 text-center text-slate-800 font-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {categoryProducts.map((product) => (
-                    <tr key={product.productId} className="border-b border-slate-200 hover:bg-blue-50 transition">
+                    <tr key={product.productId} className="border-b border-slate-200 hover:bg-red-50 transition">
                       <td className="border border-slate-300 p-4">
                         <div className="relative w-12 h-12">
                           <Image
@@ -88,7 +90,7 @@ export const CategoryWiseStockList = ({ products, onEdit, onDelete }: CategoryWi
                       <td className="border border-slate-300 p-4 text-slate-900 font-bold">₹{product.price.toFixed(2)}</td>
                       <td className="border border-slate-300 p-4 text-slate-900 font-semibold">₹{product.mrp.toFixed(2)}</td>
                       <td className="border border-slate-300 p-4">
-                        <span className={product.stock > 0 ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}>
+                        <span className="bg-red-200 text-red-800 px-3 py-1 rounded font-bold text-lg">
                           {product.stock}
                         </span>
                       </td>
@@ -102,22 +104,6 @@ export const CategoryWiseStockList = ({ products, onEdit, onDelete }: CategoryWi
                         >
                           {product.enabled ? 'Enabled' : 'Disabled'}
                         </span>
-                      </td>
-                      <td className="border border-slate-300 p-4">
-                        <div className="flex gap-2 justify-center">
-                          <button
-                            onClick={() => onEdit(product)}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => onDelete(product)}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold shadow"
-                          >
-                            Delete
-                          </button>
-                        </div>
                       </td>
                     </tr>
                   ))}

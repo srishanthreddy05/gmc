@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useOrders } from '@/hooks/useOrders';
 import { OrdersList } from '@/components/OrdersList';
 import { getDatabase } from '@/utils/firebase';
@@ -34,6 +34,17 @@ export default function Orders() {
     }
   };
 
+  // 🔥 Split Orders by Status
+  const currentOrders = useMemo(
+    () => orders.filter((order) => order.status === 'Pending'),
+    [orders]
+  );
+
+  const completedOrders = useMemo(
+    () => orders.filter((order) => order.status === 'Delivered'),
+    [orders]
+  );
+
   if (error) {
     return (
       <div className="p-8 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -45,16 +56,51 @@ export default function Orders() {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <h1 className="text-5xl font-bold mb-8 text-slate-800">Orders</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="max-w-7xl mx-auto px-6 py-10">
 
-      <div className="bg-white border-2 border-blue-300 rounded-lg p-6 shadow-lg">
+        <h1 className="text-4xl font-bold mb-10 text-slate-800">
+          Orders
+        </h1>
+
         {loading ? (
           <div className="text-center py-12">
             <p className="text-slate-600 text-lg">Loading orders...</p>
           </div>
         ) : (
-          <OrdersList orders={orders} onToggleStatus={handleToggleStatus} loadingOrderIds={loadingOrderIds} />
+          <div className="space-y-12">
+
+            {/* 🔵 Current Orders */}
+            <section>
+              <h2 className="text-2xl font-semibold text-blue-700 mb-6">
+                Current Orders ({currentOrders.length})
+              </h2>
+
+              <div className="bg-white border rounded-xl p-6 shadow-md">
+                <OrdersList
+                  orders={currentOrders}
+                  onToggleStatus={handleToggleStatus}
+                  loadingOrderIds={loadingOrderIds}
+                />
+              </div>
+            </section>
+
+            {/* 🟢 Completed Orders */}
+            <section>
+              <h2 className="text-2xl font-semibold text-green-700 mb-6">
+                Completed Orders ({completedOrders.length})
+              </h2>
+
+              <div className="bg-white border rounded-xl p-6 shadow-md">
+                <OrdersList
+                  orders={completedOrders}
+                  onToggleStatus={handleToggleStatus}
+                  loadingOrderIds={loadingOrderIds}
+                />
+              </div>
+            </section>
+
+          </div>
         )}
       </div>
     </div>

@@ -5,15 +5,32 @@ import { useProducts } from '@/hooks/useProducts';
 import { CategoryWiseStockList } from '@/components/CategoryWiseStockList';
 import { StockForm } from '@/components/StockForm';
 import { Product } from '@/types';
+import { deleteProduct } from '@/utils/firebase';
 
 export default function StockManager() {
   const { products, loading, error } = useProducts();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setShowForm(true);
+  };
+
+  const handleDelete = async (product: Product) => {
+    if (confirm(`Are you sure you want to delete "${product.name}"? This action cannot be undone.`)) {
+      setDeleting(true);
+      setDeleteError(null);
+      try {
+        await deleteProduct(product.productId);
+      } catch (err) {
+        setDeleteError(err instanceof Error ? err.message : 'Failed to delete product');
+      } finally {
+        setDeleting(false);
+      }
+    }
   };
 
   const handleAddNew = () => {
@@ -30,11 +47,11 @@ export default function StockManager() {
     handleCloseForm();
   };
 
-  if (error) {
+  if (error || deleteError) {
     return (
       <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="bg-red-100 border border-red-400 text-red-800 p-4 rounded font-semibold">
-          Error loading products: {error}
+          {error ? `Error loading products: ${error}` : `Error deleting product: ${deleteError}`}
         </div>
       </div>
     );
@@ -62,12 +79,12 @@ export default function StockManager() {
       )}
 
       <div className="bg-white border-2 border-blue-300 rounded-lg p-6 shadow-lg">
-        {loading ? (
+        {loading || deleting ? (
           <div className="text-center py-12">
-            <p className="text-slate-600 text-lg">Loading products...</p>
+            <p className="text-slate-600 text-lg">{deleting ? 'Deleting product...' : 'Loading products...'}</p>
           </div>
         ) : (
-          <CategoryWiseStockList products={products} onEdit={handleEdit} />
+          <CategoryWiseStockList products={products} onEdit={handleEdit} onDelete={handleDelete} />
         )}
       </div>
     </div>

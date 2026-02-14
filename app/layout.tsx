@@ -33,6 +33,9 @@ export default function RootLayout({
             <Link href="/" className="text-xl font-bold hover:text-slate-300">
               Grommet
             </Link>
+            <Link href="/alert-stock" className="hover:text-slate-300">
+              alert-stock
+            </Link>
             <Link href="/stock-manager" className="hover:text-slate-300">
               Stock Manager
             </Link>
